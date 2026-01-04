@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../Controllers/registration_controller.dart';
-import '../Routes/app_routes.dart';
+import '../../../app/routes/app_routes.dart';
+import '../controllers/registration_controller.dart';
 
-class Registration extends GetView<RegistrationController> {
-  const Registration({super.key});
+class RegisterView extends StatelessWidget {
+  const RegisterView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<RegistrationController>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -89,17 +90,31 @@ class Registration extends GetView<RegistrationController> {
                     const SizedBox(height: 24),
 
                     /// Register Button
-                    ElevatedButton(
-                      onPressed: () => controller.register(),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    Obx(
+                      () => ElevatedButton(
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : () => controller.register(),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        "Register",
-                        style: TextStyle(fontSize: 18),
+                        child: controller.isLoading.value
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : const Text(
+                                "Register",
+                                style: TextStyle(fontSize: 18),
+                              ),
                       ),
                     ),
 

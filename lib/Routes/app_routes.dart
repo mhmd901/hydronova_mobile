@@ -1,4 +1,1 @@
-class AppRoutes {
-  static const String register = "/register";
-  static const String login = "/login";
-}
+export '../app/routes/app_routes.dart';

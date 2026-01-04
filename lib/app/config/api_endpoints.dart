@@ -1,0 +1,6 @@
+class ApiEndpoints {
+  static const String baseUrl = 'http://192.168.0.110:8000';
+  static const String registerPath = '/M_register';
+  static const String loginPath = '/M_login';
+  static const String mePath = '/M_me';
+}

@@ -8,7 +8,6 @@ plugins {
 android {
     namespace = "com.hydronova.app.hydronova_mobile"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

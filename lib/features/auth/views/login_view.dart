@@ -1,15 +1,15 @@
-// lib/Views/login.dart  (or wherever your Login view is)
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../Controllers/login_controller.dart';
-import '../Routes/app_routes.dart';
+import '../../../app/routes/app_routes.dart';
+import '../controllers/login_controller.dart';
 
-class Login extends GetView<LoginController> {
-  const Login({super.key});
+class LoginView extends StatelessWidget {
+  const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<LoginController>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -79,17 +79,30 @@ class Login extends GetView<LoginController> {
                     const SizedBox(height: 24),
 
                     // Login Button
-                    ElevatedButton(
-                      onPressed: controller.login,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    Obx(
+                      () => ElevatedButton(
+                        onPressed:
+                            controller.isLoading.value ? null : controller.login,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(fontSize: 18),
+                        child: controller.isLoading.value
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : const Text(
+                                'Login',
+                                style: TextStyle(fontSize: 18),
+                              ),
                       ),
                     ),
 
