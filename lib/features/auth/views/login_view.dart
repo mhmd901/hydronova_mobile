@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../app/routes/app_routes.dart';
+import '../../../app/widgets/app_widgets.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends StatelessWidget {
@@ -12,102 +13,62 @@ class LoginView extends StatelessWidget {
     final controller = Get.find<LoginController>();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Center(
-          child: Text(
-            'Login',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-        ),
+        title: const Text('Login'),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Card(
-              elevation: 6,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: AppCard(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    Text(
                       'Welcome Back',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Email
-                    TextField(
-                      controller: controller.emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Password
-                    TextField(
-                      controller: controller.passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Login Button
-                    Obx(
-                      () => ElevatedButton(
-                        onPressed:
-                            controller.isLoading.value ? null : controller.login,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
                           ),
-                        ),
-                        child: controller.isLoading.value
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
-                              )
-                            : const Text(
-                                'Login',
-                                style: TextStyle(fontSize: 18),
-                              ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Sign in to continue',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.7),
+                          ),
+                    ),
+                    const SizedBox(height: 24),
+                    AppTextField(
+                      controller: controller.emailController,
+                      label: 'Email',
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      prefixIcon: Icons.email,
+                    ),
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      controller: controller.passwordController,
+                      label: 'Password',
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      prefixIcon: Icons.lock,
+                    ),
+                    const SizedBox(height: 24),
+                    Obx(
+                      () => PrimaryButton(
+                        label: 'Login',
+                        isLoading: controller.isLoading.value,
+                        onPressed: controller.login,
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
                     TextButton(
                       onPressed: () => Get.toNamed(AppRoutes.register),
                       child: const Text("Don't have an account? Register"),

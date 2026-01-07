@@ -5,6 +5,7 @@ import 'package:hydronova_mobile/Core/Network/api_service.dart';
 import 'package:hydronova_mobile/app/routes/app_pages.dart';
 import 'package:hydronova_mobile/app/routes/app_routes.dart';
 import 'package:hydronova_mobile/features/auth/services/auth_service.dart';
+import 'package:hydronova_mobile/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,10 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme(),
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       getPages: AppPages.pages,

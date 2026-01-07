@@ -10,14 +10,21 @@ class MainShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(MainNavController());
-    final pages = [
+    final pages = <Widget>[
       const HomeView(),
       ProfileView(),
     ];
+    final titles = ['Home', 'Profile'];
 
     return Obx(
       () => Scaffold(
-        body: pages[controller.selectedIndex.value],
+        appBar: AppBar(
+          title: Text(titles[controller.selectedIndex.value]),
+        ),
+        body: IndexedStack(
+          index: controller.selectedIndex.value,
+          children: pages,
+        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: controller.selectedIndex.value,
           onTap: controller.changeTab,
