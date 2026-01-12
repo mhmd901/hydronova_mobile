@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hydronova_mobile/Core/Network/api_service.dart';
+import 'package:hydronova_mobile/Services/app_bootstrap_service.dart';
 import 'package:hydronova_mobile/app/routes/app_pages.dart';
 import 'package:hydronova_mobile/app/routes/app_routes.dart';
 import 'package:hydronova_mobile/features/auth/services/auth_service.dart';
@@ -11,14 +12,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   Get.put(ApiService(), permanent: true);
+  Get.put(AppBootstrapService(), permanent: true);
   Get.put(AuthService(), permanent: true);
-  final authService = Get.find<AuthService>();
-  await authService.loadToken();
-  var initialRoute = AppRoutes.login;
-  if (authService.isLoggedIn) {
-    initialRoute = AppRoutes.main;
-  }
-  runApp(MyApp(initialRoute: initialRoute));
+  runApp(const MyApp(initialRoute: AppRoutes.splash));
 }
 
 class MyApp extends StatelessWidget {

@@ -19,6 +19,10 @@ class AuthStorage {
     await _storage.write(userKey, userJson);
   }
 
+  Future<void> saveUser(Map<String, dynamic> user) async {
+    await _storage.write(userKey, jsonEncode(user));
+  }
+
   String? getAccessToken() {
     return _storage.read<String>(accessTokenKey);
   }

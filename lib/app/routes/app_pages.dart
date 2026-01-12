@@ -5,17 +5,24 @@ import '../../features/auth/bindings/login_binding.dart';
 import '../../features/auth/bindings/registration_binding.dart';
 import '../../features/auth/views/login_view.dart';
 import '../../features/auth/views/register_view.dart';
+import '../views/bluetooth_devices_page.dart';
+import '../views/change_password_view.dart';
+import '../views/edit_profile_view.dart';
 import '../views/home_view.dart';
 import '../views/main_shell.dart';
-import '../views/splash_view.dart';
+import '../../Views/onboarding_page.dart';
+import '../../Views/splash_bootstrap_page.dart';
 import 'app_routes.dart';
 
 class AppPages {
   static final pages = <GetPage>[
     GetPage(
       name: AppRoutes.splash,
-      page: () => const SplashView(),
-      middlewares: [AuthMiddleware()],
+      page: () => const SplashBootstrapPage(),
+    ),
+    GetPage(
+      name: AppRoutes.onboarding,
+      page: () => const OnboardingPage(),
     ),
     GetPage(
       name: AppRoutes.register,
@@ -37,6 +44,21 @@ class AppPages {
     GetPage(
       name: AppRoutes.main,
       page: () => const MainShell(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: AppRoutes.bluetoothDevices,
+      page: () => const BluetoothDevicesPage(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: AppRoutes.editProfile,
+      page: () => const EditProfileView(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: AppRoutes.changePassword,
+      page: () => const ChangePasswordView(),
       middlewares: [AuthMiddleware()],
     ),
   ];

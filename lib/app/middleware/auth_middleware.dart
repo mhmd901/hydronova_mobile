@@ -13,9 +13,7 @@ class AuthMiddleware extends GetMiddleware {
     final hasToken = _authService.isLoggedIn;
 
     if (hasToken &&
-        (route == AppRoutes.login ||
-            route == AppRoutes.register ||
-            route == AppRoutes.splash)) {
+        (route == AppRoutes.login || route == AppRoutes.register)) {
       return const RouteSettings(name: AppRoutes.main);
     }
 
