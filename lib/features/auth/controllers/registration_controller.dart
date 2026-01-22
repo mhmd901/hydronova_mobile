@@ -8,6 +8,8 @@ class RegistrationController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final RxBool isLoading = false.obs;
 
   Future<void> register() async {
@@ -18,6 +20,7 @@ class RegistrationController extends GetxController {
         name: nameController.text.trim(),
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
+        passwordConfirmation: confirmPasswordController.text.trim(),
       );
       if (result.message.isNotEmpty) {
         Get.snackbar('Success', result.message);
@@ -33,9 +36,6 @@ class RegistrationController extends GetxController {
 
   @override
   void onClose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
     super.onClose();
   }
 }

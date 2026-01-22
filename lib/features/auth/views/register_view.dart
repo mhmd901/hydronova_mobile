@@ -67,6 +67,14 @@ class RegisterView extends StatelessWidget {
                       textInputAction: TextInputAction.done,
                       prefixIcon: Icons.lock,
                     ),
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      controller: controller.confirmPasswordController,
+                      label: 'Confirm Password',
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      prefixIcon: Icons.lock,
+                    ),
                     const SizedBox(height: 24),
                     Obx(
                       () => PrimaryButton(

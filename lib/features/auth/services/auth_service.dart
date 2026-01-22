@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:hydronova_mobile/Core/Network/api_service.dart';
 import 'package:hydronova_mobile/app/config/api_endpoints.dart';
@@ -33,6 +34,36 @@ class AuthService extends GetxService {
 
   bool get isLoggedIn => _accessToken.isNotEmpty;
 
+  Future<String?> getIdToken() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        return null;
+      }
+      return await user.getIdToken(false);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Failed to fetch Firebase ID token: $e');
+      }
+      return null;
+    }
+  }
+
+  Future<String?> getFreshIdToken() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        return null;
+      }
+      return await user.getIdToken(true);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Failed to refresh Firebase ID token: $e');
+      }
+      return null;
+    }
+  }
+
   Future<void> loadToken() async {
     _accessToken = _storage.getAccessToken() ?? '';
     _refreshToken = _storage.getRefreshToken() ?? '';
@@ -42,15 +73,22 @@ class AuthService extends GetxService {
     required String name,
     required String email,
     required String password,
+    String? passwordConfirmation,
   }) async {
     try {
+      final confirmation = (passwordConfirmation == null ||
+              passwordConfirmation.trim().isEmpty)
+          ? password
+          : passwordConfirmation.trim();
       final response = await _apiService.post(
         ApiEndpoints.registerPath,
         data: {
           'name': name,
           'email': email,
           'password': password,
+          'password_confirmation': confirmation,
         },
+        skipAuth: true,
       );
 
       _logResponse('Register', response);
@@ -91,6 +129,7 @@ class AuthService extends GetxService {
           'email': email,
           'password': password,
         },
+        skipAuth: true,
       );
 
       _logResponse('Login', response);
@@ -212,6 +251,9 @@ class AuthService extends GetxService {
     if (error.error is String) {
       return error.error.toString();
     }
+    if (error.type == DioExceptionType.connectionTimeout) {
+      return 'Server is slow. Please try again.';
+    }
     final statusCode = error.response?.statusCode ?? 0;
     final rawData = error.response?.data;
     if (rawData is String &&
@@ -220,7 +262,9 @@ class AuthService extends GetxService {
     }
     if (statusCode == 422) {
       final data = _normalizeResponse(rawData);
-      return _extractValidationError(data) ?? 'Validation error';
+      return _extractMessage(data) ??
+          _extractValidationError(data) ??
+          'Validation error';
     }
     if (statusCode == 500) {
       return 'Server error';

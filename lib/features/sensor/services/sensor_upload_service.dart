@@ -4,54 +4,19 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
-import 'package:hydronova_mobile/app/config/api_endpoints.dart';
-import 'package:hydronova_mobile/features/auth/services/auth_service.dart';
+import 'package:hydronova_mobile/Core/Network/api_client.dart';
 import 'package:hydronova_mobile/features/sensor/services/sensor_queue_storage.dart';
 
 class SensorUploadService extends GetxService {
-  SensorUploadService() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: ApiEndpoints.baseUrl,
-        connectTimeout: const Duration(seconds: 6),
-        receiveTimeout: const Duration(seconds: 10),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        validateStatus: (status) => status != null && status < 500,
-      ),
-    );
-
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          final token = _authService?.token;
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          handler.next(options);
-        },
-      ),
-    );
-  }
-
   final SensorQueueStorage _storage = SensorQueueStorage();
   final List<SensorQueueEvent> _queue = <SensorQueueEvent>[];
   final Random _random = Random.secure();
 
-  late final Dio _dio;
+  late final ApiClient _client = ApiClient();
   Timer? _retryTimer;
   bool _queueLoaded = false;
   bool _isFlushing = false;
   void Function(String)? _logger;
-
-  AuthService? get _authService {
-    if (Get.isRegistered<AuthService>()) {
-      return Get.find<AuthService>();
-    }
-    return null;
-  }
 
   @override
   void onInit() {
@@ -123,7 +88,15 @@ class SensorUploadService extends GetxService {
       'payload': payloadMap,
     };
 
-    final response = await _dio.post('/M_sensor_ingest', data: body);
+    final response = await _client.dio.post(
+      '/M_sensor_ingest',
+      data: body,
+      options: Options(
+        validateStatus: (status) => status != null && status < 500,
+        receiveTimeout: const Duration(seconds: 10),
+        sendTimeout: const Duration(seconds: 6),
+      ),
+    );
     if (response.statusCode != 200) return false;
     final data = _normalizeResponse(response.data);
     return data['success'] == true;

@@ -6,6 +6,7 @@ class AuthStorage {
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
   static const String userKey = 'user';
+  static const String firebaseIdTokenKey = 'firebase_id_token';
 
   final GetStorage _storage = GetStorage();
 
@@ -19,16 +20,32 @@ class AuthStorage {
     await _storage.write(userKey, userJson);
   }
 
+  Future<void> saveToken(String token) async {
+    await _storage.write(accessTokenKey, token);
+  }
+
   Future<void> saveUser(Map<String, dynamic> user) async {
     await _storage.write(userKey, jsonEncode(user));
+  }
+
+  Future<void> saveFirebaseIdToken(String token) async {
+    await _storage.write(firebaseIdTokenKey, token);
   }
 
   String? getAccessToken() {
     return _storage.read<String>(accessTokenKey);
   }
 
+  String? getToken() {
+    return _storage.read<String>(accessTokenKey);
+  }
+
   String? getRefreshToken() {
     return _storage.read<String>(refreshTokenKey);
+  }
+
+  String? getFirebaseIdToken() {
+    return _storage.read<String>(firebaseIdTokenKey);
   }
 
   Map<String, dynamic>? getUser() {
@@ -47,5 +64,10 @@ class AuthStorage {
     await _storage.remove(accessTokenKey);
     await _storage.remove(refreshTokenKey);
     await _storage.remove(userKey);
+    await _storage.remove(firebaseIdTokenKey);
+  }
+
+  Future<void> clearToken() async {
+    await _storage.remove(accessTokenKey);
   }
 }

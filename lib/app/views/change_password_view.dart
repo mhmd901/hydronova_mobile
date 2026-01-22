@@ -1,69 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hydronova_mobile/Core/Network/api_service.dart';
-import 'package:hydronova_mobile/app/config/api_endpoints.dart';
+import 'package:hydronova_mobile/features/profile/controllers/change_password_controller.dart';
 
-class ChangePasswordView extends StatefulWidget {
-  const ChangePasswordView({super.key});
+class ChangePasswordView extends GetView<ChangePasswordController> {
+  ChangePasswordView({super.key});
 
-  @override
-  State<ChangePasswordView> createState() => _ChangePasswordViewState();
-}
-
-class _ChangePasswordViewState extends State<ChangePasswordView> {
   static const Color _primaryColor = Color(0xFF2DAA9E);
   static const Color _backgroundColor = Color(0xFFF7F9FB);
   static const Color _cardColor = Color(0xFFFFFFFF);
   static const Color _textColor = Color(0xFF212529);
 
   final _formKey = GlobalKey<FormState>();
-  final _currentController = TextEditingController();
-  final _newController = TextEditingController();
-  final _confirmController = TextEditingController();
-  bool _isSaving = false;
 
-  @override
-  void dispose() {
-    _currentController.dispose();
-    _newController.dispose();
-    _confirmController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _changePassword() async {
-    if (!_formKey.currentState!.validate()) {
+  void _submit() {
+    final form = _formKey.currentState;
+    if (form == null || !form.validate()) {
       return;
     }
-    setState(() {
-      _isSaving = true;
-    });
-
-    try {
-      final api = Get.find<ApiService>();
-      await api.post(
-        ApiEndpoints.changePasswordPath,
-        data: {
-          'current_password': _currentController.text,
-          'password': _newController.text,
-          'password_confirmation': _confirmController.text,
-        },
-      );
-      if (mounted) {
-        Get.snackbar('Success', 'Password updated');
-        Get.back();
-      }
-    } catch (error) {
-      if (mounted) {
-        final message = error.toString().replaceFirst('Exception: ', '');
-        Get.snackbar('Update Failed', message);
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
-    }
+    controller.changePassword();
   }
 
   @override
@@ -109,13 +63,13 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller: _currentController,
+                        controller: controller.currentController,
                         decoration: const InputDecoration(
                           labelText: 'Current Password',
                         ),
                         obscureText: true,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return 'Current password is required';
                           }
                           return null;
@@ -123,56 +77,65 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        controller: _newController,
+                        controller: controller.newController,
                         decoration: const InputDecoration(
                           labelText: 'New Password',
                         ),
                         obscureText: true,
                         validator: (value) {
-                          if (value == null || value.length < 6) {
-                            return 'Password must be at least 6 characters';
+                          if (value == null || value.trim().isEmpty) {
+                            return 'New password is required';
+                          }
+                          if (value.trim().length < 8) {
+                            return 'Password must be at least 8 characters';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        controller: _confirmController,
+                        controller: controller.confirmController,
                         decoration: const InputDecoration(
                           labelText: 'Confirm New Password',
                         ),
                         obscureText: true,
                         validator: (value) {
-                          if (value != _newController.text) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Confirm your new password';
+                          }
+                          if (value.trim() !=
+                              controller.newController.text.trim()) {
                             return 'Passwords do not match';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: _isSaving ? null : _changePassword,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: _primaryColor,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(48),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      Obx(
+                        () => ElevatedButton(
+                          onPressed:
+                              controller.isSaving.value ? null : _submit,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _primaryColor,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                        ),
-                        child: _isSaving
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
+                          child: controller.isSaving.value
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
                                   ),
-                                ),
-                              )
-                            : const Text('Update Password'),
+                                )
+                              : const Text('Update Password'),
+                        ),
                       ),
                     ],
                   ),

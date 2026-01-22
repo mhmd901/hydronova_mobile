@@ -5,6 +5,8 @@ import '../../features/auth/bindings/login_binding.dart';
 import '../../features/auth/bindings/registration_binding.dart';
 import '../../features/auth/views/login_view.dart';
 import '../../features/auth/views/register_view.dart';
+import '../../features/profile/bindings/change_password_binding.dart';
+import '../../features/profile/bindings/edit_profile_binding.dart';
 import '../views/bluetooth_devices_page.dart';
 import '../views/change_password_view.dart';
 import '../views/edit_profile_view.dart';
@@ -53,12 +55,14 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.editProfile,
-      page: () => const EditProfileView(),
+      page: () => EditProfileView(),
+      binding: EditProfileBinding(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: AppRoutes.changePassword,
-      page: () => const ChangePasswordView(),
+      page: () => ChangePasswordView(),
+      binding: ChangePasswordBinding(),
       middlewares: [AuthMiddleware()],
     ),
   ];
