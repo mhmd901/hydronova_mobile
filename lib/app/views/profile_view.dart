@@ -38,24 +38,66 @@ class ProfileView extends StatelessWidget {
     final result = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Logout?'),
-        content: const Text('Are you sure you want to logout?'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Container(
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.logout,
+                color: Colors.red,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text('Logout'),
+            ),
+          ],
+        ),
+        content: const Text(
+          'You are about to sign out. You can log back in anytime.',
+        ),
         actions: [
-          OutlinedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: _secondaryColor,
-              side: const BorderSide(color: _secondaryColor),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _secondaryColor,
+                      side: const BorderSide(color: _secondaryColor),
+                      minimumSize: const Size.fromHeight(44),
+                    ),
+                    child: const Text('Stay Logged In'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('Logout'),
+                  ),
+                ),
+              ],
             ),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Logout'),
           ),
         ],
       ),

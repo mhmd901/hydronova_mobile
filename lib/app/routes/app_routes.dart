@@ -5,7 +5,6 @@ abstract class AppRoutes {
   static const String home = '/home';
   static const String main = '/main';
   static const String splash = '/';
-  static const String bluetoothDevices = '/bluetooth-devices';
   static const String editProfile = '/edit-profile';
   static const String changePassword = '/change-password';
 }

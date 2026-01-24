@@ -5,9 +5,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:hydronova_mobile/Core/Network/api_service.dart';
 import 'package:hydronova_mobile/Core/Network/token_provider.dart';
 import 'package:hydronova_mobile/Services/app_bootstrap_service.dart';
+import 'package:hydronova_mobile/app/controllers/main_nav_controller.dart';
 import 'package:hydronova_mobile/app/routes/app_pages.dart';
 import 'package:hydronova_mobile/app/routes/app_routes.dart';
 import 'package:hydronova_mobile/features/auth/services/auth_service.dart';
+import 'package:hydronova_mobile/features/assistant/assistant_controller.dart';
 import 'package:hydronova_mobile/theme/app_theme.dart';
 
 Future<void> main() async {
@@ -22,6 +24,8 @@ Future<void> main() async {
   Get.put(TokenProvider(), permanent: true);
   Get.put(AppBootstrapService(), permanent: true);
   Get.put(AuthService(), permanent: true);
+  Get.put(MainNavController(), permanent: true);
+  Get.put(AssistantController(), permanent: true);
   runApp(const MyApp(initialRoute: AppRoutes.splash));
 }
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hydronova_mobile/Core/Network/show_success_dialog.dart';
+import 'package:hydronova_mobile/app/controllers/main_nav_controller.dart';
+import 'package:hydronova_mobile/app/routes/app_routes.dart';
 import 'package:hydronova_mobile/features/auth/services/auth_storage.dart';
 import 'package:hydronova_mobile/features/profile/services/profile_service.dart';
 
@@ -10,6 +13,12 @@ class EditProfileController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final RxBool isSaving = false.obs;
+
+  void _goToProfile() {
+    final navController = Get.find<MainNavController>();
+    navController.changeTab(2);
+    Get.offAllNamed(AppRoutes.main);
+  }
 
   @override
   void onInit() {
@@ -30,8 +39,13 @@ class EditProfileController extends GetxController {
       if (result.success) {
         final message =
             result.message.isNotEmpty ? result.message : 'Profile updated';
-        Get.snackbar('Success', message);
-        Get.back();
+        final context = Get.context;
+        if (context != null) {
+          showSuccessDialog(context, 'Success', message, _goToProfile);
+        } else {
+          Get.snackbar('Success', message);
+          _goToProfile();
+        }
       } else {
         Get.snackbar('Update Failed', result.message);
       }

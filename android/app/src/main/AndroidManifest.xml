@@ -1,13 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Bluetooth + location permissions for HC-05 (Android 12+ and pre-12) -->
-    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
     <application
         android:label="hydronova_mobile"
         android:name="${applicationName}"

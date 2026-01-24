@@ -7,7 +7,6 @@ import '../../features/auth/views/login_view.dart';
 import '../../features/auth/views/register_view.dart';
 import '../../features/profile/bindings/change_password_binding.dart';
 import '../../features/profile/bindings/edit_profile_binding.dart';
-import '../views/bluetooth_devices_page.dart';
 import '../views/change_password_view.dart';
 import '../views/edit_profile_view.dart';
 import '../views/home_view.dart';
@@ -46,11 +45,6 @@ class AppPages {
     GetPage(
       name: AppRoutes.main,
       page: () => const MainShell(),
-      middlewares: [AuthMiddleware()],
-    ),
-    GetPage(
-      name: AppRoutes.bluetoothDevices,
-      page: () => const BluetoothDevicesPage(),
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
