@@ -21,26 +21,48 @@ class HomeView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _DataCard(
-                  label: 'Temp',
-                  unit: '°C',
-                  accent: const Color(0xFFF4A261),
-                  valueBuilder: () => controller.temperature.value,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _DataCard(
-                  label: 'Humidity',
-                  unit: '%',
-                  accent: const Color(0xFF4D9DE0),
-                  valueBuilder: () => controller.humidity.value,
-                ),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              const spacing = 12.0;
+              final cardWidth = (constraints.maxWidth - spacing) / 2;
+              return Wrap(
+                spacing: spacing,
+                runSpacing: spacing,
+                children: [
+                  SizedBox(
+                    width: cardWidth,
+                    child: _DataCard(
+                      label: 'Temp',
+                      unit: '?C',
+                      accent: const Color(0xFFF4A261),
+                      icon: Icons.thermostat_outlined,
+                      valueBuilder: () => controller.temperature.value,
+                    ),
+                  ),
+                  SizedBox(
+                    width: cardWidth,
+                    child: _DataCard(
+                      label: 'Humidity',
+                      unit: '%',
+                      accent: const Color(0xFF4D9DE0),
+                      icon: Icons.water_drop_outlined,
+                      valueBuilder: () => controller.humidity.value,
+                    ),
+                  ),
+                  SizedBox(
+                    width: cardWidth,
+                    child: _DataCard(
+                      label: 'Water Level',
+                      unit: '%',
+                      accent: const Color(0xFF2A9D8F),
+                      icon: Icons.waves_outlined,
+                      valueBuilder: () => controller.waterLevel.value,
+                      showProgress: true,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 12),
           Obx(
@@ -68,12 +90,16 @@ class _DataCard extends StatelessWidget {
     required this.unit,
     required this.accent,
     required this.valueBuilder,
+    this.icon,
+    this.showProgress = false,
   });
 
   final String label;
   final String unit;
   final Color accent;
   final double? Function() valueBuilder;
+  final IconData? icon;
+  final bool showProgress;
 
   String _displayValue(double? value) {
     if (value == null) return '--';
@@ -85,6 +111,9 @@ class _DataCard extends StatelessWidget {
     return Obx(
       () {
         final value = valueBuilder();
+        final progressValue = value == null
+            ? null
+            : (value / 100).clamp(0.0, 1.0);
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -93,16 +122,43 @@ class _DataCard extends StatelessWidget {
             border: Border.all(
               color: accent.withOpacity(0.4),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: accent,
-                  fontWeight: FontWeight.w600,
-                ),
+              Row(
+                children: [
+                  if (icon != null)
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: accent.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        icon,
+                        size: 18,
+                        color: accent,
+                      ),
+                    ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: accent,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               RichText(
@@ -124,6 +180,18 @@ class _DataCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (showProgress) ...[
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: LinearProgressIndicator(
+                    value: progressValue,
+                    minHeight: 6,
+                    backgroundColor: accent.withOpacity(0.2),
+                    valueColor: AlwaysStoppedAnimation<Color>(accent),
+                  ),
+                ),
+              ],
             ],
           ),
         );

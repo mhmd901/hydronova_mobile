@@ -23,6 +23,7 @@ class BluetoothController extends GetxController {
       ConnectionStatus.disconnected.obs;
   final RxnDouble temperature = RxnDouble();
   final RxnDouble humidity = RxnDouble();
+  final RxnDouble waterLevel = RxnDouble();
   final Rxn<DateTime> lastUpdate = Rxn<DateTime>();
 
   final StringBuffer _buffer = StringBuffer();
@@ -238,31 +239,46 @@ class BluetoothController extends GetxController {
     final match = RegExp(
       r'(-?\d+(?:\.\d+)?)\s*[cC]\s*,?\s*(-?\d+(?:\.\d+)?)\s*%?',
     ).firstMatch(line);
+    final levelMatch = RegExp(
+      r'level\s*[:=]\s*(-?\d+(?:\.\d+)?)\s*%?',
+      caseSensitive: false,
+    ).firstMatch(line);
     if (match == null) return false;
     final temp = double.tryParse(match.group(1) ?? '');
     final hum = double.tryParse(match.group(2) ?? '');
-    if (temp == null && hum == null) return false;
+    final level = levelMatch == null
+        ? null
+        : double.tryParse(levelMatch.group(1) ?? '');
+    if (temp == null && hum == null && level == null) return false;
     if (temp != null) {
       temperature.value = temp;
     }
     if (hum != null) {
       humidity.value = hum;
     }
+    if (level != null) {
+      waterLevel.value = level;
+    }
     lastUpdate.value = DateTime.now();
-    _log('[PARSED] temp=$temp hum=$hum');
+    _log('[PARSED] temp=$temp hum=$hum level=$level');
     return true;
   }
 
   void _updateSensorValues(Map<dynamic, dynamic> parsed) {
     final temp = _pickNumber(parsed, const ['temp', 'temperature', 't']);
     final hum = _pickNumber(parsed, const ['humidity', 'hum', 'h']);
+    final level =
+        _pickNumber(parsed, const ['level', 'water', 'waterlevel', 'wl']);
     if (temp != null) {
       temperature.value = temp;
     }
     if (hum != null) {
       humidity.value = hum;
     }
-    if (temp != null || hum != null) {
+    if (level != null) {
+      waterLevel.value = level;
+    }
+    if (temp != null || hum != null || level != null) {
       lastUpdate.value = DateTime.now();
     }
   }
