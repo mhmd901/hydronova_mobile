@@ -60,6 +60,26 @@ class HomeView extends StatelessWidget {
                       showProgress: true,
                     ),
                   ),
+                  SizedBox(
+                    width: cardWidth,
+                    child: _DataCard(
+                      label: 'pH',
+                      unit: 'pH',
+                      accent: const Color(0xFF8E6BBF),
+                      icon: Icons.science_outlined,
+                      valueBuilder: () => controller.ph.value,
+                    ),
+                  ),
+                  SizedBox(
+                    width: cardWidth,
+                    child: _DataCard(
+                      label: 'Nutrient',
+                      unit: 'ppm',
+                      accent: const Color(0xFFF4D35E),
+                      icon: Icons.bubble_chart_outlined,
+                      valueBuilder: () => controller.nutrient.value,
+                    ),
+                  ),
                 ],
               );
             },

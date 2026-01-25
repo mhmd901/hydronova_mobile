@@ -24,6 +24,8 @@ class BluetoothController extends GetxController {
   final RxnDouble temperature = RxnDouble();
   final RxnDouble humidity = RxnDouble();
   final RxnDouble waterLevel = RxnDouble();
+  final RxnDouble ph = RxnDouble();
+  final RxnDouble nutrient = RxnDouble();
   final Rxn<DateTime> lastUpdate = Rxn<DateTime>();
 
   final StringBuffer _buffer = StringBuffer();
@@ -236,20 +238,50 @@ class BluetoothController extends GetxController {
   }
 
   bool _tryParsePlainPayload(String line) {
-    final match = RegExp(
+    final tempMatch = RegExp(
+      r'(?:temp(?:erature)?|t)\s*[:=]\s*(-?\d+(?:\.\d+)?)\s*[cC]?',
+      caseSensitive: false,
+    ).firstMatch(line);
+    final humMatch = RegExp(
+      r'(?:hum(?:idity)?|h)\s*[:=]\s*(-?\d+(?:\.\d+)?)\s*%?',
+      caseSensitive: false,
+    ).firstMatch(line);
+    final fallbackMatch = RegExp(
       r'(-?\d+(?:\.\d+)?)\s*[cC]\s*,?\s*(-?\d+(?:\.\d+)?)\s*%?',
     ).firstMatch(line);
     final levelMatch = RegExp(
       r'level\s*[:=]\s*(-?\d+(?:\.\d+)?)\s*%?',
       caseSensitive: false,
     ).firstMatch(line);
-    if (match == null) return false;
-    final temp = double.tryParse(match.group(1) ?? '');
-    final hum = double.tryParse(match.group(2) ?? '');
+    final phMatch = RegExp(
+      r'ph(?:\s*\(.*?\))?\s*[:=]\s*(-?\d+(?:\.\d+)?)',
+      caseSensitive: false,
+    ).firstMatch(line);
+    final nutrientMatch = RegExp(
+      r'nutrient(?:\s*\(.*?\))?\s*[:=]\s*(-?\d+(?:\.\d+)?)',
+      caseSensitive: false,
+    ).firstMatch(line);
+    final temp = double.tryParse(
+      (tempMatch?.group(1) ?? fallbackMatch?.group(1) ?? ''),
+    );
+    final hum = double.tryParse(
+      (humMatch?.group(1) ?? fallbackMatch?.group(2) ?? ''),
+    );
     final level = levelMatch == null
         ? null
         : double.tryParse(levelMatch.group(1) ?? '');
-    if (temp == null && hum == null && level == null) return false;
+    final phValue =
+        phMatch == null ? null : double.tryParse(phMatch.group(1) ?? '');
+    final nutrientValue = nutrientMatch == null
+        ? null
+        : double.tryParse(nutrientMatch.group(1) ?? '');
+    if (temp == null &&
+        hum == null &&
+        level == null &&
+        phValue == null &&
+        nutrientValue == null) {
+      return false;
+    }
     if (temp != null) {
       temperature.value = temp;
     }
@@ -259,8 +291,16 @@ class BluetoothController extends GetxController {
     if (level != null) {
       waterLevel.value = level;
     }
+    if (phValue != null) {
+      ph.value = phValue;
+    }
+    if (nutrientValue != null) {
+      nutrient.value = nutrientValue;
+    }
     lastUpdate.value = DateTime.now();
-    _log('[PARSED] temp=$temp hum=$hum level=$level');
+    _log(
+      '[PARSED] temp=$temp hum=$hum level=$level ph=$phValue nutrient=$nutrientValue',
+    );
     return true;
   }
 
@@ -269,6 +309,9 @@ class BluetoothController extends GetxController {
     final hum = _pickNumber(parsed, const ['humidity', 'hum', 'h']);
     final level =
         _pickNumber(parsed, const ['level', 'water', 'waterlevel', 'wl']);
+    final phValue = _pickNumber(parsed, const ['ph', 'ph_avg', 'phavg']);
+    final nutrientValue =
+        _pickNumber(parsed, const ['nutrient', 'nutrient_avg', 'nutrientavg']);
     if (temp != null) {
       temperature.value = temp;
     }
@@ -278,7 +321,17 @@ class BluetoothController extends GetxController {
     if (level != null) {
       waterLevel.value = level;
     }
-    if (temp != null || hum != null || level != null) {
+    if (phValue != null) {
+      ph.value = phValue;
+    }
+    if (nutrientValue != null) {
+      nutrient.value = nutrientValue;
+    }
+    if (temp != null ||
+        hum != null ||
+        level != null ||
+        phValue != null ||
+        nutrientValue != null) {
       lastUpdate.value = DateTime.now();
     }
   }
