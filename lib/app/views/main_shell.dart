@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hydronova_mobile/app/controllers/main_nav_controller.dart';
 import 'package:hydronova_mobile/app/views/home_view.dart';
 import 'package:hydronova_mobile/app/views/profile_view.dart';
+import 'package:hydronova_mobile/app/routes/app_routes.dart';
 import 'package:hydronova_mobile/features/assistant/assistant_page.dart';
 
 class MainShell extends StatelessWidget {
@@ -23,6 +24,15 @@ class MainShell extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(titles[controller.selectedIndex.value]),
+          actions: controller.selectedIndex.value == 0
+              ? [
+                  IconButton(
+                    onPressed: () => Get.toNamed(AppRoutes.bluetooth),
+                    tooltip: 'Bluetooth',
+                    icon: const Icon(Icons.bluetooth),
+                  ),
+                ]
+              : null,
         ),
         body: IndexedStack(
           index: controller.selectedIndex.value,

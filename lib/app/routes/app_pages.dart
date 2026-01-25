@@ -9,6 +9,7 @@ import '../../features/profile/bindings/change_password_binding.dart';
 import '../../features/profile/bindings/edit_profile_binding.dart';
 import '../views/change_password_view.dart';
 import '../views/edit_profile_view.dart';
+import '../views/bluetooth_view.dart';
 import '../views/home_view.dart';
 import '../views/main_shell.dart';
 import '../../Views/onboarding_page.dart';
@@ -57,6 +58,11 @@ class AppPages {
       name: AppRoutes.changePassword,
       page: () => ChangePasswordView(),
       binding: ChangePasswordBinding(),
+      middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: AppRoutes.bluetooth,
+      page: () => const BluetoothView(),
       middlewares: [AuthMiddleware()],
     ),
   ];

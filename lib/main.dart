@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:hydronova_mobile/Core/Network/api_service.dart';
 import 'package:hydronova_mobile/Core/Network/token_provider.dart';
 import 'package:hydronova_mobile/Services/app_bootstrap_service.dart';
+import 'package:hydronova_mobile/app/controllers/bluetooth_controller.dart';
 import 'package:hydronova_mobile/app/controllers/main_nav_controller.dart';
 import 'package:hydronova_mobile/app/routes/app_pages.dart';
 import 'package:hydronova_mobile/app/routes/app_routes.dart';
@@ -26,6 +27,7 @@ Future<void> main() async {
   Get.put(AuthService(), permanent: true);
   Get.put(MainNavController(), permanent: true);
   Get.put(AssistantController(), permanent: true);
+  Get.put(BluetoothController(), permanent: true);
   runApp(const MyApp(initialRoute: AppRoutes.splash));
 }
 
