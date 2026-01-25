@@ -10,7 +10,7 @@ class BluetoothView extends StatelessWidget {
     final controller = Get.find<BluetoothController>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HC-05 Bluetooth SPP'),
+        title: const Text('Bluetooth Connection'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -22,10 +22,6 @@ class BluetoothView extends StatelessWidget {
                 spacing: 12,
                 runSpacing: 12,
                 children: [
-                  ElevatedButton(
-                    onPressed: controller.requestPermissions,
-                    child: const Text('Request Permissions'),
-                  ),
                   ElevatedButton(
                     onPressed: controller.enableBluetooth,
                     child: const Text('Enable Bluetooth'),
@@ -68,11 +64,12 @@ class BluetoothView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: Row(
+              child: Column(
                 children: [
                   Expanded(
                     flex: 2,
                     child: Container(
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
                         border: Border.all(color: Colors.grey.shade300),
@@ -141,10 +138,11 @@ class BluetoothView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(height: 12),
                   Expanded(
                     flex: 3,
                     child: Container(
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
                         border: Border.all(color: Colors.grey.shade300),
