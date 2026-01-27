@@ -66,7 +66,7 @@ class ApiClient {
   }
 
   static final ApiClient _instance = ApiClient._internal();
-  static const String _baseUrl = 'http://192.168.0.108:8000';
+  static const String _baseUrl = 'https://hydronova.multydo.com';
 
   factory ApiClient() => _instance;
 
