@@ -1,16 +1,40 @@
-# hydronova_mobile
+# HydroNova Mobile (Flutter + GetX)
 
-A new Flutter project.
+HydroNova Mobile is the companion app for the HydroNova smart hydroponics ecosystem.  
+It connects to an Arduino Uno via Bluetooth (HC-05) to display live sensor readings, and provides an AI assistant for hydroponics and farming guidance.
 
-## Getting Started
+## Features
+- Firebase Authentication (Email/Password)
+- Unified login with HydroNova Web (same credentials)
+- Bluetooth pairing and connection (HC-05)
+- Real-time sensor monitoring (JSON parsing)
+- AI Assistant (via n8n webhook + OpenAI API)
+- Plant recommendations page (seasonal suggestions)
+- Profile page (view/update user info + change password)
 
-This project is a starting point for a Flutter application.
+## Tech Stack
+- **Flutter**
+- **GetX** (state management + routing)
+- **Firebase Authentication**
+- **Firebase Realtime Database** (optional sync if enabled)
+- Bluetooth communication with **HC-05**
+- AI assistant using **n8n + OpenAI API**
+- JSON-based request/response handling
 
-A few resources to get you started if this is your first Flutter project:
+## Architecture
+- Uses **MVC-style structure**:
+  - Views (UI)
+  - Controllers (GetX)
+  - Services (Bluetooth, Firebase, API)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+> Note: Arduino communicates **only with the mobile app** via Bluetooth (no direct Firebase connection).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## Setup & Run Locally
+
+### 1) Clone & install dependencies
+```bash
+git clone <YOUR_REPO_URL>
+cd <YOUR_PROJECT_FOLDER>
+flutter pub get
